@@ -1158,9 +1158,9 @@
                     id="f-panache" data-key="panache"></textarea></div>
             <div class="field"><label for="f-topo">Topographie</label><textarea id="f-topo"
                     data-key="topographie"></textarea></div>
-            <div class="field"><label for="f-rensDemande">📥 JE DEMANDE (Transit & Renforts)</label><textarea
+            <div class="field"><label for="f-rensDemande">✅ JE CONFIRME (Transit / Flash)</label><textarea
                     id="f-rensDemande" data-key="rensDemande"
-                    placeholder="Demandes de renforts, services à prévenir..."></textarea></div>
+                    placeholder="Confirmation des premières demandes..."></textarea></div>
         </div>
 
 
@@ -1521,8 +1521,8 @@
                 if (rsq) jeFais.push(`- Risques : ${rsq}`);
                 if (jeFais.length) parts.push(`⚙️ JE FAIS :\n${jeFais.join('\n')}`);
 
-                // Je demande
-                const demandeTextT = document.getElementById('f-rensDemande')?.value || '';
+                // ✅ JE CONFIRME (Flash / Transit)
+                const confirmationText = document.getElementById('f-rensDemande')?.value || '';
                 const servicesDemandes = [];
                 if (document.getElementById('f-trDemandeFDO')?.checked) servicesDemandes.push('Forces de l\'ordre');
                 if (document.getElementById('f-trDemandeONF')?.checked) servicesDemandes.push('ONF');
@@ -1532,6 +1532,12 @@
                 if (document.getElementById('f-trDemandeEnedis')?.checked) servicesDemandes.push('Enedis');
                 if (document.getElementById('f-trDemandeGRDF')?.checked) servicesDemandes.push('GRDF');
 
+                const jeConfirme = [];
+                if (confirmationText) jeConfirme.push(`- Rappel : ${confirmationText}`);
+                if (servicesDemandes.length) jeConfirme.push(`- Services : ${servicesDemandes.join(', ')}`);
+                if (jeConfirme.length) parts.push(`✅ JE CONFIRME :\n${jeConfirme.join('\n')}`);
+
+                // 📥 JE DEMANDE (Nouveaux besoins)
                 const renfort = document.getElementById('f-renfort')?.value || '';
                 const commentD = document.getElementById('f-commentDemandes')?.value || '';
 
@@ -1546,8 +1552,6 @@
                 });
 
                 const jeDemande = [];
-                if (demandeTextT) jeDemande.push(`- Transit : ${demandeTextT}`);
-                if (servicesDemandes.length) jeDemande.push(`- Services : ${servicesDemandes.join(', ')}`);
                 if (moyensDemandes.length) jeDemande.push(`- Moyens : ${moyensDemandes.join(', ')}`);
                 if (renfort) jeDemande.push(`- Renfort : ${renfort}`);
                 if (commentD) jeDemande.push(`- Commentaire : ${commentD}`);
