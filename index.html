@@ -598,6 +598,71 @@
                 <label for="f-codis-param">CODIS <span class="req">★</span></label>
                 <input type="text" id="f-codis-param" data-key="codisParam" value="CODIS 77">
             </div>
+
+            <!-- Datalist des CI de Seine-et-Marne -->
+            <datalist id="ci-list">
+                <option value="BEAUMONT DU GATINAIS"></option>
+                <option value="BOIS LE ROI"></option>
+                <option value="BOURRON MARLOTTE"></option>
+                <option value="BRAY SUR SEINE"></option>
+                <option value="BRIE COMTE ROBERT"></option>
+                <option value="CHAMPGAGNE SUR SEINE"></option>
+                <option value="CHAPELLE LA REINE"></option>
+                <option value="CHATEAU LANDON"></option>
+                <option value="CHATELLET EN BRIE"></option>
+                <option value="CHELLES"></option>
+                <option value="CHENOISE"></option>
+                <option value="CHESSY"></option>
+                <option value="CLAYE SOUILLY"></option>
+                <option value="COULOMMIERS"></option>
+                <option value="CRECY LA CHAPELLE"></option>
+                <option value="DAMMARIE LES LYS"></option>
+                <option value="DAMMARTIN EN GOELE"></option>
+                <option value="DONNEMARIE DONTILLY"></option>
+                <option value="EGREVILLE"></option>
+                <option value="FAREMOUTIERS"></option>
+                <option value="FERRIERES EN BRIE"></option>
+                <option value="FERTE GAUCHER"></option>
+                <option value="FERTE SOUS JOUARRE"></option>
+                <option value="FONTAINEBLEAU"></option>
+                <option value="FONTENAY TRESIGNY"></option>
+                <option value="GRANDE PAROISSE"></option>
+                <option value="GUIGNES"></option>
+                <option value="JOUY LE CHATEL"></option>
+                <option value="LAGNY SUR MARNE"></option>
+                <option value="LIZY SUR OURCQ"></option>
+                <option value="LOGNES"></option>
+                <option value="LORREZ LE BOCAGE"></option>
+                <option value="MAISON ROUGE"></option>
+                <option value="MEAUX"></option>
+                <option value="MEILLERAY"></option>
+                <option value="MELUN"></option>
+                <option value="MITRY MORY"></option>
+                <option value="MOISSY CRAMAYEL"></option>
+                <option value="MONTEREAU FAULT YONNE"></option>
+                <option value="MORET SUR LOING"></option>
+                <option value="MORMANT"></option>
+                <option value="NANGIS"></option>
+                <option value="NEMOURS"></option>
+                <option value="OZOIR LA FERRIERE"></option>
+                <option value="PONTAULT COMBAULT"></option>
+                <option value="PROVINS"></option>
+                <option value="REBAIS"></option>
+                <option value="ROZAY EN BRIE"></option>
+                <option value="SAINT FARGEAU PONTHIERRY"></option>
+                <option value="SAINT GERMAIN SUR MORIN"></option>
+                <option value="SAINT SOUPPLETS"></option>
+                <option value="SAVIGNY LE TEMPLE"></option>
+                <option value="SOUPPES SUR LOING"></option>
+                <option value="TOURNAN EN BRIE"></option>
+                <option value="TRILPORT"></option>
+                <option value="VAIRES SUR MARNE"></option>
+                <option value="VAUX LE PENIL"></option>
+                <option value="VILLEPARISIS"></option>
+                <option value="VILLIERS SAINT GEORGES"></option>
+                <option value="VOULX"></option>
+                <option value="VULAINES SUR SEINE"></option>
+            </datalist>
             <div class="field">
                 <label>Mode d'engagement <span class="req">★</span></label>
                 <div class="chk-group">
@@ -615,7 +680,7 @@
                     <div class="field"><label for="f-ccf-num">N° CCF</label><input type="number" id="f-ccf-num"
                             data-key="ccfNum" placeholder="N°" inputmode="numeric" pattern="[0-9]*"></div>
                     <div class="field"><label for="f-ccf-ci">CI d'appartenance</label><input type="text" id="f-ccf-ci"
-                            data-key="ccfCI" placeholder="ex: CI Melun"></div>
+                            data-key="ccfCI" placeholder="ex: Melun" list="ci-list"></div>
                 </div>
                 <label
                     style="display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem;font-weight:600;color:var(--primary)"><input
@@ -634,7 +699,7 @@
                         <div class="field"><label for="f-vltt-num">N°</label><input type="number" id="f-vltt-num"
                                 data-key="vlttNum" placeholder="N° VLTT" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-vltt-ci">CI</label><input type="text" id="f-vltt-ci"
-                                data-key="vlttCI" placeholder="CI d'appartenance"></div>
+                                data-key="vlttCI" placeholder="CI" list="ci-list"></div>
                     </div>
                     <div class="field-row">
                         <div class="field"><label for="f-vltt-pt">Pos. transit</label><input type="number"
@@ -657,7 +722,7 @@
                         <div class="field"><label for="f-gccf1-num">N°</label><input type="number" id="f-gccf1-num"
                                 data-key="gccf1Num" placeholder="N° CCF 1" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-gccf1-ci">CI</label><input type="text" id="f-gccf1-ci"
-                                data-key="gccf1CI" placeholder="CI"></div>
+                                data-key="gccf1CI" placeholder="CI" list="ci-list"></div>
                     </div>
                     <div class="field-row">
                         <div class="field"><label for="f-gccf1-pt">Pos. transit</label><input type="number"
@@ -679,7 +744,7 @@
                         <div class="field"><label for="f-gccf2-num">N°</label><input type="number" id="f-gccf2-num"
                                 data-key="gccf2Num" placeholder="N° CCF 2" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-gccf2-ci">CI</label><input type="text" id="f-gccf2-ci"
-                                data-key="gccf2CI" placeholder="CI"></div>
+                                data-key="gccf2CI" placeholder="CI" list="ci-list"></div>
                     </div>
                     <div class="field-row">
                         <div class="field"><label for="f-gccf2-pt">Pos. transit</label><input type="number"
@@ -701,7 +766,7 @@
                         <div class="field"><label for="f-gccf3-num">N°</label><input type="number" id="f-gccf3-num"
                                 data-key="gccf3Num" placeholder="N° CCF 3" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-gccf3-ci">CI</label><input type="text" id="f-gccf3-ci"
-                                data-key="gccf3CI" placeholder="CI"></div>
+                                data-key="gccf3CI" placeholder="CI" list="ci-list"></div>
                     </div>
                     <div class="field-row">
                         <div class="field"><label for="f-gccf3-pt">Pos. transit</label><input type="number"
@@ -723,7 +788,7 @@
                         <div class="field"><label for="f-gccf4-num">N°</label><input type="number" id="f-gccf4-num"
                                 data-key="gccf4Num" placeholder="N° CCF 4" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-gccf4-ci">CI</label><input type="text" id="f-gccf4-ci"
-                                data-key="gccf4CI" placeholder="CI"></div>
+                                data-key="gccf4CI" placeholder="CI" list="ci-list"></div>
                     </div>
                     <div class="field-row">
                         <div class="field"><label for="f-gccf4-pt">Pos. transit</label><input type="number"
