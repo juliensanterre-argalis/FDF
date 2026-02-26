@@ -1158,8 +1158,9 @@
                     id="f-panache" data-key="panache"></textarea></div>
             <div class="field"><label for="f-topo">Topographie</label><textarea id="f-topo"
                     data-key="topographie"></textarea></div>
-            <div class="field"><label for="f-veget">Végétation</label><textarea id="f-veget"
-                    data-key="vegetation"></textarea></div>
+            <div class="field"><label for="f-rensDemande">📥 JE DEMANDE (Transit & Renforts)</label><textarea
+                    id="f-rensDemande" data-key="rensDemande"
+                    placeholder="Demandes de renforts, services à prévenir..."></textarea></div>
         </div>
 
 
@@ -1406,6 +1407,7 @@
                 document.getElementById('formations-block').style.display = (mode === 'giff') ? 'block' : 'none';
                 saveToStorage();
                 updateFormations();
+                updatePropagation();
             };
 
             /* ===== FORMATIONS : transit & tactique ===== */
@@ -1520,7 +1522,7 @@
                 if (jeFais.length) parts.push(`⚙️ JE FAIS :\n${jeFais.join('\n')}`);
 
                 // Je demande
-                const demandeTextT = document.getElementById('f-trDemande')?.value || '';
+                const demandeTextT = document.getElementById('f-rensDemande')?.value || '';
                 const servicesDemandes = [];
                 if (document.getElementById('f-trDemandeFDO')?.checked) servicesDemandes.push('Forces de l\'ordre');
                 if (document.getElementById('f-trDemandeONF')?.checked) servicesDemandes.push('ONF');
@@ -1676,6 +1678,13 @@
                 const trTact = document.getElementById('f-trTactique');
                 const destTact = document.getElementById('f-tactique');
                 if (trTact && destTact && !destTact.dataset.manual) destTact.value = trTact.value;
+                // Synchronisation Je demande (Transit -> Renseignements)
+                const trDemande = document.getElementById('f-trDemande');
+                const rensDemande = document.getElementById('f-rensDemande');
+                if (trDemande && rensDemande && !rensDemande.dataset.manual) {
+                    rensDemande.value = trDemande.value;
+                }
+
                 // AIR / SOL
                 const trAir = document.getElementById('f-trAirSol');
                 const destAir = document.getElementById('f-airsol');
@@ -1683,7 +1692,7 @@
             }
             // Permettre à l'utilisateur de saisir manuellement dans les champs D (override)
             document.addEventListener('DOMContentLoaded', () => {
-                ['f-dfci', 'f-jesuis', 'f-codis', 'f-commune', 'f-cos', 'f-panache', 'f-topo', 'f-veget', 'f-accesRepli', 'f-risques', 'f-tactique', 'f-airsol', 'f-trJeSuis'].forEach(id => {
+                ['f-dfci', 'f-jesuis', 'f-codis', 'f-commune', 'f-cos', 'f-panache', 'f-topo', 'f-veget', 'f-accesRepli', 'f-risques', 'f-tactique', 'f-airsol', 'f-trJeSuis', 'f-rensDemande'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el) {
                         el.addEventListener('focus', () => { el.dataset.manual = 'true'; });
