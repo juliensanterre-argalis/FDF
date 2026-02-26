@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fiche Réflexe FDF — Message CODIS</title>
+    <meta name="description" content="Fiche réflexe Feux de Forêt — Génération de message CODIS standardisé">
+    <style>
+        /* ===== RESET & FONDATIONS MOBILE-FIRST ===== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #fff;
+            --txt: #000;
+            --border: #444;
+            --surface: #f3f3f3;
+            --primary: #c62828;
+            --primary-light: #ef5350;
+            --secondary: #0d47a1;
+            --accent: #ff8f00;
+            --error: #b71c1c;
+            --success: #2e7d32;
+            --radius: 10px;
+            --gap: 0.6rem;
+        }
+
+        html {
+            font-size: 16px
+        }
+
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--txt);
+            line-height: 1.5;
+            padding: 0 0 110px 0;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* ===== HEADER ===== */
+        .app-header {
+            background: var(--primary);
+            color: #fff;
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .app-header h1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: .5px
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.4rem
+        }
+
+        .header-actions button {
+            background: rgba(255, 255, 255, .2);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 0.7rem;
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            min-height: 40px;
+        }
+
+        .header-actions button:active {
+            background: rgba(255, 255, 255, .35)
+        }
+
+        /* ===== SECTIONS (tab-based, une seule visible) ===== */
+        .tab-section {
+            display: none;
+            padding: 0.8rem 1rem;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        .field {
+            margin-bottom: 0.8rem
+        }
+
+        .field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem
+        }
+
+        .field label .req {
+            color: var(--error);
+            font-weight: 800;
+            margin-left: 2px
+        }
+
+        .field input[type="text"],
+        .field input[type="number"],
+        .field input[type="date"],
+        .field input[type="time"],
+        .field select,
+        .field textarea {
+            width: 100%;
+            padding: 0.7rem 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background: #fff;
+            color: var(--txt);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(13, 71, 161, .25);
+        }
+
+        .field textarea {
+            min-height: 70px;
+            resize: vertical;
+            font-family: inherit
+        }
+
+        .field .error-msg {
+            color: var(--error);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 2px;
+            display: none
+        }
+
+        .field.has-error input,
+        .field.has-error select,
+        .field.has-error textarea {
+            border-color: var(--error)
+        }
+
+        .field.has-error .error-msg {
+            display: block
+        }
+
+        .field .hint {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 2px
+        }
+
+        .field-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap
+        }
+
+        .field-row .field {
+            flex: 1;
+            min-width: 120px
+        }
+
+        /* ===== CHECKBOXES / RADIOS ===== */
+        .chk-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.3rem
+        }
+
+        .chk-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--surface);
+            padding: 0.5rem 0.8rem;
+            border-radius: var(--radius);
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+            min-height: 44px;
+        }
+
+        .chk-group label:has(input:checked) {
+            border-color: var(--secondary);
+            background: #e3f2fd
+        }
+
+        .chk-group input[type="checkbox"],
+        .chk-group input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--secondary);
+        }
+
+        /* ===== DYNAMIC LIST (Moyens) ===== */
+        .dyn-list .dyn-item {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+
+        .dyn-list .dyn-item input {
+            flex: 1
+        }
+
+        .dyn-list .dyn-item input.qty {
+            max-width: 70px;
+            text-align: center
+        }
+
+        .dyn-list .dyn-item button {
+            background: var(--error);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .btn-add {
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 44px;
+            width: 100%;
+            margin-top: 0.3rem;
+        }
+
+        /* ===== SYNTHESE ===== */
+        #synthese-preview {
+            width: 100%;
+            min-height: 200px;
+            padding: 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            background: #fffff5;
+            color: var(--txt);
+            resize: vertical;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px
+        }
+
+        /* ===== BARRE TABS EN BAS ===== */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #fff;
+            border-top: 3px solid var(--primary);
+            display: flex;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, .15);
+            scrollbar-width: none;
+        }
+
+        .tab-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-bar button {
+            flex: 0 0 auto;
+            padding: 0.5rem 0.6rem;
+            border: none;
+            background: transparent;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 54px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.15rem;
+            color: #666;
+            white-space: nowrap;
+            min-width: 60px;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-bar button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(198, 40, 40, .06);
+        }
+
+        .tab-bar button .tab-icon {
+            font-size: 1.2rem;
+        }
+
+        /* ===== DROPDOWN MENU (header) ===== */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            background: rgba(255, 255, 255, .25);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 0.7rem;
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 700;
+            min-height: 40px;
+        }
+
+        .dropdown-toggle:active {
+            background: rgba(255, 255, 255, .4);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+            z-index: 200;
+            min-width: 200px;
+            margin-top: 4px;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--txt);
+            text-align: left;
+        }
+
+        .dropdown-menu button:active {
+            background: var(--surface);
+        }
+
+        .dropdown-menu button+button {
+            border-top: 1px solid #eee;
+        }
+
+        /* ===== LOADER ===== */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 1rem
+        }
+
+        .loader.active {
+            display: block
+        }
+
+        .loader .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid var(--surface);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* ===== CALCUL DISPLAY ===== */
+        .calc-display {
+            background: #e8f5e9;
+            border: 2px solid var(--success);
+            border-radius: var(--radius);
+            padding: 0.6rem 0.8rem;
+            margin-top: 0.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* ===== NE LARGUEZ PAS ===== */
+        .no-drop-warning {
+            background: var(--error);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.1rem;
+            padding: 0.8rem;
+            border-radius: var(--radius);
+            text-align: center;
+            margin-top: 0.5rem;
+            display: none;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .7
+            }
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity .3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1
+        }
+
+        /* ===== DESKTOP ===== */
+        @media(min-width:768px) {
+            .tab-bar {
+                max-width: 800px;
+                margin: 0 auto;
+                left: 50%;
+                transform: translateX(-50%)
+            }
+
+            main {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+        }
+
+        /* ===== FLASH OVERLAY ===== */
+        .flash-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 300;
+            display: none;
+            background: rgba(0, 0, 0, .4);
+        }
+
+        .flash-overlay.open {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .flash-overlay-panel {
+            background: #fff;
+            width: 90%;
+            max-width: 400px;
+            height: 100%;
+            padding: 1.2rem;
+            box-shadow: -8px 0 30px rgba(0, 0, 0, .25);
+            animation: slideInRight .25s ease-out;
+            overflow-y: auto;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* ===== FORMATIONS (transit / tactique) ===== */
+        .formation-display {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .formation-display .formation-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--surface);
+            padding: 0.5rem 0.8rem;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .formation-display .formation-item .pos-num {
+            background: var(--secondary);
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .formation-display.tactique .formation-item {
+            border-left-color: var(--primary);
+        }
+
+        .formation-display.tactique .formation-item .pos-num {
+            background: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <h1>🔥 Fiche Réflexe FDF</h1>
+        <div class="header-actions">
+            <button onclick="exportJSON()" title="Exporter">📥</button>
+            <button onclick="document.getElementById('importFile').click()" title="Importer">📤</button>
+            <button onclick="resetForm()" title="Réinitialiser">🗑️</button>
+            <div class="dropdown">
+                <button class="dropdown-toggle" onclick="toggleDropdown()">⚡ CODIS</button>
+                <div class="dropdown-menu" id="codis-dropdown">
+                    <button onclick="generateCODIS();closeDropdown()">🤖 Générer message CODIS</button>
+                    <button onclick="copyMessage();closeDropdown()">📋 Copier le message</button>
+                    <button onclick="shareMessage();closeDropdown()" id="btn-share">📤 Partager</button>
+                </div>
+            </div>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+        </div>
+    </header>
+
+
+    <main style="padding-bottom:70px">
+
+        <!-- ===== SECTION: Paramètres ===== -->
+        <div class="tab-section active" id="sec-params">
+            <div class="section-title">⚙️ Paramètres</div>
+            <div class="field">
+                <label for="f-codis-param">CODIS <span class="req">★</span></label>
+                <input type="text" id="f-codis-param" data-key="codisParam" value="CODIS 77">
+            </div>
+            <div class="field">
+                <label>Mode d'engagement <span class="req">★</span></label>
+                <div class="chk-group">
+                    <label><input type="radio" name="modeEngagement" value="ccf" data-key="modeEngagement"
+                            onchange="toggleModeEngagement()"> CCF isolé</label>
+                    <label><input type="radio" name="modeEngagement" value="giff" data-key="modeEngagement"
+                            onchange="toggleModeEngagement()"> GIFF</label>
+                </div>
+            </div>
+
+            <!-- CCF isolé -->
+            <div id="block-ccf" style="display:none">
+                <h3 style="margin:0.8rem 0 0.4rem;color:var(--secondary)">🚒 CCF isolé</h3>
+                <div class="field-row">
+                    <div class="field"><label for="f-ccf-num">N° CCF</label><input type="text" id="f-ccf-num"
+                            data-key="ccfNum" placeholder="ex: CCF 1234"></div>
+                    <div class="field"><label for="f-ccf-ci">CI d'appartenance</label><input type="text" id="f-ccf-ci"
+                            data-key="ccfCI" placeholder="ex: CI Melun"></div>
+                </div>
+                <label
+                    style="display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem;font-weight:600;color:var(--primary)"><input
+                        type="radio" name="jeSuisSur" value="ccf" data-key="jeSuisSur"> 📍 Je suis sur cet engin</label>
+            </div>
+
+            <!-- GIFF -->
+            <div id="block-giff" style="display:none">
+                <h3 style="margin:0.8rem 0 0.4rem;color:var(--secondary)">🚁 GIFF — Composition</h3>
+                <!-- VLTT -->
+                <div
+                    style="background:var(--surface);padding:0.6rem 0.8rem;border-radius:var(--radius);margin-bottom:0.5rem">
+                    <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚙
+                        VLTT</label>
+                    <div class="field-row">
+                        <div class="field"><label for="f-vltt-num">N°</label><input type="text" id="f-vltt-num"
+                                data-key="vlttNum" placeholder="N° VLTT"></div>
+                        <div class="field"><label for="f-vltt-ci">CI</label><input type="text" id="f-vltt-ci"
+                                data-key="vlttCI" placeholder="CI d'appartenance"></div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field"><label for="f-vltt-pt">Pos. transit</label><input type="number"
+                                id="f-vltt-pt" data-key="vlttPosTransit" min="1" max="5" placeholder="—"></div>
+                        <div class="field"><label for="f-vltt-pk">Pos. tactique</label><input type="number"
+                                id="f-vltt-pk" data-key="vlttPosTactique" min="1" max="5" placeholder="—"></div>
+                    </div>
+                    <label
+                        style="display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem;font-weight:600;color:var(--primary)"><input
+                            type="radio" name="jeSuisSur" value="vltt" data-key="jeSuisSur"> 📍 Je suis ici</label>
+                </div>
+                <!-- CCF 1 -->
+                <div
+                    style="background:var(--surface);padding:0.6rem 0.8rem;border-radius:var(--radius);margin-bottom:0.5rem">
+                    <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚒 CCF
+                        1</label>
+                    <div class="field-row">
+                        <div class="field"><label for="f-gccf1-num">N°</label><input type="text" id="f-gccf1-num"
+                                data-key="gccf1Num" placeholder="N° CCF 1"></div>
+                        <div class="field"><label for="f-gccf1-ci">CI</label><input type="text" id="f-gccf1-ci"
+                                data-key="gccf1CI" placeholder="CI"></div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field"><label for="f-gccf1-pt">Pos. transit</label><input type="number"
+                                id="f-gccf1-pt" data-key="gccf1PosTransit" min="1" max="5" placeholder="—"></div>
+                        <div class="field"><label for="f-gccf1-pk">Pos. tactique</label><input type="number"
+                                id="f-gccf1-pk" data-key="gccf1PosTactique" min="1" max="5" placeholder="—"></div>
+                    </div>
+                    <label
+                        style="display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem;font-weight:600;color:var(--primary)"><input
+                            type="radio" name="jeSuisSur" value="gccf1" data-key="jeSuisSur"> 📍 Je suis ici</label>
+                </div>
+                <div
+                    style="background:var(--surface);padding:0.6rem 0.8rem;border-radius:var(--radius);margin-bottom:0.5rem">
+                    <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚒 CCF
+                        2</label>
+                    <div class="field-row">
+                        <div class="field"><label for="f-gccf2-num">N°</label><input type="text" id="f-gccf2-num"
+                                data-key="gccf2Num" placeholder="N° CCF 2"></div>
+                        <div class="field"><label for="f-gccf2-ci">CI</label><input type="text" id="f-gccf2-ci"
+                                data-key="gccf2CI" placeholder="CI"></div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field"><label for="f-gccf2-pt">Pos. transit</label><input type="number"
+                                id="f-gccf2-pt" data-key="gccf2PosTransit" min="1" max="5" placeholder="—"></div>
+                        <div class="field"><label for="f-gccf2-pk">Pos. tactique</label><input type="number"
+                                id="f-gccf2-pk" data-key="gccf2PosTactique" min="1" max="5" placeholder="—"></div>
+                    </div>
+                    <label
+                        style="display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem;font-weight:600;color:var(--primary)"><input
+                            type="radio" name="jeSuisSur" value="gccf2" data-key="jeSuisSur"> 📍 Je suis ici</label>
+                </div>
+                <div
+                    style="background:var(--surface);padding:0.6rem 0.8rem;border-radius:var(--radius);margin-bottom:0.5rem">
+                    <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚒 CCF
+                        3</label>
+                    <div class="field-row">
+                        <div class="field"><label for="f-gccf3-num">N°</label><input type="text" id="f-gccf3-num"
+                                data-key="gccf3Num" placeholder="N° CCF 3"></div>
+                        <div class="field"><label for="f-gccf3-ci">CI</label><input type="text" id="f-gccf3-ci"
+                                data-key="gccf3CI" placeholder="CI"></div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field"><label for="f-gccf3-pt">Pos. transit</label><input type="number"
+                                id="f-gccf3-pt" data-key="gccf3PosTransit" min="1" max="5" placeholder="—"></div>
+                        <div class="field"><label for="f-gccf3-pk">Pos. tactique</label><input type="number"
+                                id="f-gccf3-pk" data-key="gccf3PosTactique" min="1" max="5" placeholder="—"></div>
+                    </div>
+                    <label
+                        style="display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem;font-weight:600;color:var(--primary)"><input
+                            type="radio" name="jeSuisSur" value="gccf3" data-key="jeSuisSur"> 📍 Je suis ici</label>
+                </div>
+                <div
+                    style="background:var(--surface);padding:0.6rem 0.8rem;border-radius:var(--radius);margin-bottom:0.5rem">
+                    <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚒 CCF
+                        4</label>
+                    <div class="field-row">
+                        <div class="field"><label for="f-gccf4-num">N°</label><input type="text" id="f-gccf4-num"
+                                data-key="gccf4Num" placeholder="N° CCF 4"></div>
+                        <div class="field"><label for="f-gccf4-ci">CI</label><input type="text" id="f-gccf4-ci"
+                                data-key="gccf4CI" placeholder="CI"></div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field"><label for="f-gccf4-pt">Pos. transit</label><input type="number"
+                                id="f-gccf4-pt" data-key="gccf4PosTransit" min="1" max="5" placeholder="—"></div>
+                        <div class="field"><label for="f-gccf4-pk">Pos. tactique</label><input type="number"
+                                id="f-gccf4-pk" data-key="gccf4PosTactique" min="1" max="5" placeholder="—"></div>
+                    </div>
+                    <label
+                        style="display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem;font-weight:600;color:var(--primary)"><input
+                            type="radio" name="jeSuisSur" value="gccf4" data-key="jeSuisSur"> 📍 Je suis ici</label>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ===== SECTION: Astro Météo ===== -->
+        <div class="tab-section" id="sec-meteo">
+            <div class="section-title">☀️ A — Astro Météo</div>
+            <div class="field-row">
+                <div class="field"><label for="f-date">Date <span class="req">★</span></label><input type="date"
+                        id="f-date" data-key="date"></div>
+                <div class="field"><label for="f-heure">Heure <span class="req">★</span></label><input type="time"
+                        id="f-heure" data-key="heure"></div>
+            </div>
+            <div class="field-row">
+                <div class="field"><label for="f-vent">Vent — Azimut (°)</label><input type="number" id="f-vent"
+                        data-key="vent" placeholder="ex: 315" min="0" max="360"><span class="hint">Provenance du
+                        vent (0=N, 90=E, 180=S, 270=O)</span></div>
+                <div class="field"><label for="f-force">Force vent (km/h)</label><input type="number" id="f-force"
+                        data-key="force" placeholder="ex: 30" min="0"></div>
+            </div>
+            <div class="field-row">
+                <div class="field"><label for="f-temp">T° (°C)</label><input type="number" id="f-temp"
+                        data-key="temperature" placeholder="32"></div>
+                <div class="field"><label for="f-hygro">Hygro (%)</label><input type="number" id="f-hygro"
+                        data-key="hygro" placeholder="25" min="0" max="100"></div>
+            </div>
+            <div class="field">
+                <label for="f-risque">Risque FDF <span class="req">★</span></label>
+                <select id="f-risque" data-key="risqueFDF">
+                    <option value="">— Choisir —</option>
+                    <option>Faible</option>
+                    <option>Modéré</option>
+                    <option>Élevé</option>
+                    <option>Très élevé</option>
+                    <option>Extrême</option>
+                </select>
+            </div>
+            <div class="calc-display" id="calc-propag">
+                Vitesse propagation : <span id="propag-h">—</span> m/h | <span id="propag-m">—</span> m/min
+            </div>
+        </div>
+
+        <!-- ===== SECTION: Avant Départ ===== -->
+        <div class="tab-section" id="sec-depart">
+            <div class="section-title">🚒 B — Avant Départ</div>
+            <div class="field-row">
+                <div class="field"><label for="f-hDepart">Heure départ</label><input type="time" id="f-hDepart"
+                        data-key="heureDepart"></div>
+                <div class="field"><label for="f-freq">Fréquence 3/4</label><input type="text" id="f-freq"
+                        data-key="frequence" placeholder="ex: 152.000"></div>
+            </div>
+            <div class="field"><label for="f-direction">Direction</label><input type="text" id="f-direction"
+                    data-key="direction"></div>
+            <div class="field"><label for="f-pointAdresse">Point à atteindre — Adresse</label><input type="text"
+                    id="f-pointAdresse" data-key="pointAdresse" placeholder="Adresse / lieu-dit"></div>
+            <div class="field"><label for="f-pointCommune">Commune</label><input type="text" id="f-pointCommune"
+                    data-key="pointCommune" placeholder="Commune"></div>
+            <div class="field"><label for="f-pointDFCI">Coordonnée DFCI</label><input type="text" id="f-pointDFCI"
+                    data-key="pointDFCI" placeholder="ex: KL45"></div>
+            <div class="field"><label for="f-itineraire">Itinéraire</label><input type="text" id="f-itineraire"
+                    data-key="itineraire"></div>
+            <div class="field">
+                <label>Essai radio</label>
+                <div class="chk-group">
+                    <label><input type="checkbox" data-key="radioOK"> OK</label>
+                    <label><input type="checkbox" data-key="radioKO"> KO</label>
+                </div>
+                <input type="text" id="f-radioComment" data-key="radioComment" placeholder="Commentaire radio"
+                    style="margin-top:0.4rem">
+            </div>
+            <div class="field"><label for="f-sigDepart">Signaler le départ (horaire)</label><input type="time"
+                    id="f-sigDepart" data-key="signalerDepart"></div>
+            <div class="field"><label for="f-obstacles">Obstacles</label><input type="text" id="f-obstacles"
+                    data-key="obstacles"></div>
+            <div class="field">
+                <div class="chk-group"><label><input type="checkbox" data-key="contactRIS"> Contact RIS
+                        établi</label></div>
+            </div>
+
+            <!-- Formations (auto-générées depuis Paramètres) -->
+            <div id="formations-block" style="display:none">
+                <h3 style="margin:1rem 0 0.5rem;color:var(--secondary)">🚦 Formation de transit</h3>
+                <div id="formation-transit" class="formation-display"></div>
+                <div
+                    style="background:#e8f5e9;border-left:4px solid #43a047;padding:0.6rem 0.8rem;border-radius:8px;margin-top:0.5rem;font-size:0.9rem">
+                    <strong>📋 Consignes transit :</strong>
+                    <ul style="margin:0.3rem 0 0 1.2rem;padding:0;line-height:1.6">
+                        <li>Giro + Feux de croisement allumés</li>
+                        <li>Canal radio : <strong id="consigne-transit-freq"></strong></li>
+                        <li>Ceintures attachées</li>
+                    </ul>
+                </div>
+                <h3 style="margin:1rem 0 0.5rem;color:var(--primary)">⚔️ Formation tactique</h3>
+                <div id="formation-tactique" class="formation-display"></div>
+                <div
+                    style="background:#fff3e0;border-left:4px solid #ef6c00;padding:0.6rem 0.8rem;border-radius:8px;margin-top:0.5rem;font-size:0.9rem">
+                    <strong>📋 Consignes tactique :</strong>
+                    <ul style="margin:0.3rem 0 0 1.2rem;padding:0;line-height:1.6">
+                        <li>Feux de croisement allumés</li>
+                        <li>Canal radio : <strong id="consigne-tactique-freq"></strong></li>
+                        <li>Ceintures attachées</li>
+                        <li>Giro démonté</li>
+                        <li>Rétroviseurs rabattus</li>
+                        <li>Vitres fermées</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SECTION: En Transit ===== -->
+        <div class="tab-section" id="sec-transit">
+            <div class="section-title">📡 C — En Transit</div>
+
+            <!-- MESSAGE FLASH -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin:0.5rem 0 0.4rem">
+                <h3 style="margin:0;color:var(--primary)">📢 MESSAGE FLASH</h3>
+                <button type="button" onclick="buildFlashMessage()"
+                    style="background:var(--primary);color:#fff;border:none;padding:0.4rem 0.8rem;border-radius:var(--radius);font-weight:700;font-size:0.85rem;cursor:pointer">⚡
+                    Générer Flash</button>
+            </div>
+            <!-- Overlay Flash -->
+            <div id="flash-overlay" class="flash-overlay">
+                <div class="flash-overlay-panel">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem">
+                        <h3 style="margin:0;color:var(--primary)">📢 Message Flash</h3>
+                        <button type="button" onclick="closeFlashOverlay()"
+                            style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#888;padding:0.2rem 0.5rem">✕</button>
+                    </div>
+                    <textarea id="f-trFlash" data-key="trFlash" rows="8" style="width:100%;font-size:0.95rem"
+                        placeholder="Message flash…"></textarea>
+                    <button type="button" onclick="copyFlash()"
+                        style="margin-top:0.5rem;width:100%;background:var(--secondary);color:#fff;border:none;padding:0.6rem;border-radius:var(--radius);font-weight:700;font-size:0.9rem;cursor:pointer">📋
+                        Copier le message</button>
+                </div>
+            </div>
+            <!-- Je suis (masqué, données conservées pour la sync) -->
+            <textarea id="f-trJeSuis" data-key="trJeSuis" style="display:none"></textarea>
+            <div class="field"><label for="f-trApercois">J'aperçois (panache : importance / inclinaison /
+                    couleur)</label>
+                <textarea id="f-trApercois" data-key="trApercois"
+                    placeholder="Description du panache observé…"></textarea>
+            </div>
+            <div class="field"><label for="f-trDemande">Je demande</label>
+                <textarea id="f-trDemande" data-key="trDemande"
+                    placeholder="- renfort terrestre et aérien&#10;- demande l'attribution d'une fréquence"></textarea>
+            </div>
+            <div class="field-row">
+                <div class="field"><label for="f-trTactique">Tactique de chantier</label>
+                    <textarea id="f-trTactique" data-key="trTactique"></textarea>
+                </div>
+                <div class="field"><label for="f-trAirSol">AIR / SOL</label>
+                    <textarea id="f-trAirSol" data-key="trAirSol"></textarea>
+                </div>
+            </div>
+
+            <!-- Délégation -->
+            <div
+                style="background:#e3f2fd;border-left:4px solid #1565c0;padding:0.7rem 0.8rem;border-radius:8px;margin:0.8rem 0;font-size:0.9rem">
+                <div class="field" style="margin-bottom:0.4rem">
+                    <label><input type="checkbox" data-key="trDelegation"> <strong>Déléguer la responsabilité du groupe
+                            à mon adjoint</strong></label>
+                </div>
+                <p style="margin:0;font-style:italic;color:#555;font-size:0.82rem">
+                    « Je viens de passer un message flash au CODIS pour lui signaler le visuel, panache de fumée et
+                    demande des renforts terrestres et aériens. Je vais prendre un peu d'avance et certainement le COS.
+                    Je te délègue la gestion du groupe et on passe entre nous sur la fréquence chantier. »
+                </p>
+            </div>
+
+
+        </div>
+
+        <!-- ===== SECTION: Actions / Sécurité (moved before Renseignements) ===== -->
+        <div class="tab-section" id="sec-actions">
+            <div class="section-title">⚙️ Actions / Sécurité — JE FAIS</div>
+            <div class="field"><label for="f-actionsCours">Actions en cours</label><textarea id="f-actionsCours"
+                    data-key="actionsEnCours"></textarea></div>
+            <div class="field"><label for="f-tactique">Tactique de chantier</label><textarea id="f-tactique"
+                    data-key="tactique"></textarea></div>
+            <div class="field"><label for="f-accesRepli">Accès / Repli</label><textarea id="f-accesRepli"
+                    data-key="accesRepli"></textarea></div>
+            <div class="field"><label for="f-risques">Risques</label><textarea id="f-risques"
+                    data-key="risques"></textarea></div>
+            <div class="field"><label for="f-securite">Sécurité</label><textarea id="f-securite"
+                    data-key="securite"></textarea></div>
+            <div class="field"><label for="f-missionSouhaitee">Mission souhaitée</label><textarea
+                    id="f-missionSouhaitee" data-key="missionSouhaitee"></textarea></div>
+        </div>
+
+        <!-- ===== SECTION: Demandes / Renforts (moved before Renseignements) ===== -->
+        <div class="tab-section" id="sec-demandes">
+            <div class="section-title">🚁 Demandes / Renforts — JE DEMANDE</div>
+            <div class="field">
+                <label>Moyens demandés</label>
+                <div class="dyn-list" id="moyens-list"></div>
+                <button type="button" class="btn-add" onclick="addMoyen()">＋ Ajouter un moyen</button>
+            </div>
+            <div class="field"><label for="f-renfort">Renfort</label><input type="text" id="f-renfort"
+                    data-key="renfort"></div>
+            <div class="field"><label for="f-commentDemandes">Commentaire demandes</label><textarea
+                    id="f-commentDemandes" data-key="commentDemandes"></textarea></div>
+        </div>
+
+        <!-- ===== SECTION: Aero (Replacing Synthèse) ===== -->
+        <div class="tab-section" id="sec-aero">
+            <div class="section-title">🚁 F — Aéro</div>
+
+            <div class="field">
+                <label>Moyens Aéro engagés</label>
+                <div
+                    style="display:flex; gap:0.5rem; font-size:0.75rem; font-weight:bold; color:#666; margin-bottom:0.2rem; padding:0 0.2rem; white-space:nowrap; overflow:hidden;">
+                    <div style="flex:2; min-width:80px;">Aéronef</div>
+                    <div style="flex:1; min-width:60px; text-align:center;">Délai rot.</div>
+                    <div style="flex:1; min-width:60px; text-align:center;">Autonomie</div>
+                    <div style="flex:1; text-align:center;">H. Limite</div>
+                    <div style="width:28px;"></div>
+                </div>
+                <div class="dyn-list" id="aero-moyens-list"></div>
+                <button type="button" class="btn-add" onclick="addAeroMoyen()">＋ Ajouter un moyen aéro</button>
+            </div>
+
+
+
+            <div class="field">
+                <label for="f-airsol">AIR / SOL</label>
+                <textarea id="f-airsol" data-key="airSol" placeholder="Fréquence ou canal utilisé"></textarea>
+            </div>
+
+            <div class="field">
+                <label>Autorisation de largage <span class="req">★</span></label>
+                <div class="chk-group">
+                    <label><input type="radio" name="largage" value="Oui" data-key="largageOui"> Oui</label>
+                    <label><input type="radio" name="largage" value="Non" data-key="largageNon"> Non</label>
+                </div>
+                <div class="no-drop-warning" id="no-drop-warn">⛔ NE LARGUEZ PAS ⛔</div>
+            </div>
+
+            <div class="field"><label for="f-commentAero">Commentaire Aéro</label><textarea id="f-commentAero"
+                    data-key="commentAero"></textarea></div>
+        </div>
+
+        <!-- ===== SECTION: Message de Renseignements ===== -->
+        <div class="tab-section" id="sec-renseignements">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem">
+                <div class="section-title" style="border:none;margin:0;padding:0">📋 D — Message de Renseignements</div>
+                <button type="button" onclick="buildRenseignementsMessage()"
+                    style="background:var(--primary);color:#fff;border:none;padding:0.4rem 0.8rem;border-radius:var(--radius);font-weight:700;font-size:0.85rem;cursor:pointer;white-space:nowrap">⚡
+                    Générer Message</button>
+            </div>
+            <!-- Overlay Renseignements -->
+            <div id="rens-overlay" class="flash-overlay">
+                <div class="flash-overlay-panel">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem">
+                        <h3 style="margin:0;color:var(--primary)">📋 Message de Renseignements</h3>
+                        <button type="button" onclick="closeRensOverlay()"
+                            style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#888;padding:0.2rem 0.5rem">✕</button>
+                    </div>
+                    <textarea id="f-rensMessage" data-key="rensMessage" rows="12" style="width:100%;font-size:0.95rem"
+                        placeholder="Message de renseignements…"></textarea>
+                    <button type="button" onclick="copyRensMessage()"
+                        style="margin-top:0.5rem;width:100%;background:var(--secondary);color:#fff;border:none;padding:0.6rem;border-radius:var(--radius);font-weight:700;font-size:0.9rem;cursor:pointer">📋
+                        Copier le message</button>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field"><label for="f-codis">CODIS <span class="req">★</span></label><input type="text"
+                        id="f-codis" data-key="codis" placeholder="Identifiant CODIS"></div>
+                <div class="field"><label for="f-cos">COS <span class="req">★</span></label><input type="text"
+                        id="f-cos" data-key="cos" placeholder="Identifiant COS"></div>
+            </div>
+            <div class="field-row">
+                <div class="field"><label for="f-commune">Commune(s)</label><input type="text" id="f-commune"
+                        data-key="commune"></div>
+                <div class="field"><label for="f-dfci">En DFCI</label><input type="text" id="f-dfci" data-key="dfci">
+                </div>
+            </div>
+            <div class="field"><label for="f-jesuis">Je suis (adresse / lieu-dit / coordonnées)</label><textarea
+                    id="f-jesuis" data-key="jeSuis" placeholder="Position, distance au départ de feu…"></textarea>
+            </div>
+
+            <!-- JE VOIS -->
+            <h3 style="margin:1rem 0 0.5rem;color:var(--primary)">👁️ JE VOIS</h3>
+            <div class="field">
+                <label>Type de zone</label>
+                <div class="chk-group">
+                    <label><input type="checkbox" data-key="zoneForet"> Forêt</label>
+                    <label><input type="checkbox" data-key="zoneBroussailles"> Broussailles</label>
+                </div>
+            </div>
+            <div class="field">
+                <label>Strate</label>
+                <div class="chk-group">
+                    <label><input type="checkbox" data-key="strateHerb"> Herbacées</label>
+                    <label><input type="checkbox" data-key="strateArbust"> Arbustives</label>
+                    <label><input type="checkbox" data-key="strateArbor"> Arborescente</label>
+                </div>
+            </div>
+            <div class="field">
+                <label>Composé de</label>
+                <div class="chk-group">
+                    <label><input type="checkbox" data-key="compFeuillus"> Feuillus</label>
+                    <label><input type="checkbox" data-key="compResineux"> Résineux</label>
+                </div>
+            </div>
+            <div class="field">
+                <label>Massif</label>
+                <div class="chk-group">
+                    <label><input type="checkbox" data-key="massifDense"> Dense</label>
+                    <label><input type="checkbox" data-key="massifPeuDense"> Peu dense</label>
+                    <label><input type="checkbox" data-key="massifContinu"> Continu</label>
+                    <label><input type="checkbox" data-key="massifDiscontinu"> Discontinu</label>
+                </div>
+            </div>
+            <div class="field">
+                <label>Propagation</label>
+                <div class="chk-group">
+                    <label><input type="checkbox" data-key="propPenteAsc"> Pente ascendante</label>
+                    <label><input type="checkbox" data-key="propPenteDesc"> Pente descendante</label>
+                    <label><input type="checkbox" data-key="propTalweg"> Talweg</label>
+                    <label><input type="checkbox" data-key="propCrete"> Crête</label>
+                </div>
+                <input type="text" data-key="propAxe" placeholder="Axe de propagation" style="margin-top:0.4rem">
+            </div>
+            <div class="field-row">
+                <div class="field"><label for="f-surfBrulee">Surface brûlée</label><input type="text" id="f-surfBrulee"
+                        data-key="surfaceBrulee" placeholder="ha"></div>
+                <div class="field"><label for="f-surfMenacee">Surface menacée</label><input type="text"
+                        id="f-surfMenacee" data-key="surfaceMenacee" placeholder="ha"></div>
+            </div>
+            <div class="field">
+                <label style="font-size:1.05rem;font-weight:700;color:var(--primary)">Enjeux / Points
+                    sensibles</label>
+            </div>
+            <div class="field"><label for="f-enjeuP">🧑 P — Population</label><input type="text" id="f-enjeuP"
+                    data-key="enjeuP" placeholder="Habitations, camping, ERP…"></div>
+            <div class="field"><label for="f-enjeuB">🏠 B — Biens</label><input type="text" id="f-enjeuB"
+                    data-key="enjeuB" placeholder="Bâtiments, véhicules, exploitations…"></div>
+            <div class="field"><label for="f-enjeuE">🌿 E — Environnement</label><input type="text" id="f-enjeuE"
+                    data-key="enjeuE" placeholder="Zone Natura 2000, captage eau…"></div>
+            <div class="field"><label for="f-panache">Panache (importance / inclinaison / couleur)</label><textarea
+                    id="f-panache" data-key="panache"></textarea></div>
+            <div class="field"><label for="f-topo">Topographie</label><textarea id="f-topo"
+                    data-key="topographie"></textarea></div>
+            <div class="field"><label for="f-veget">Végétation</label><textarea id="f-veget"
+                    data-key="vegetation"></textarea></div>
+        </div>
+
+
+
+    </main>
+
+    <!-- ===== BARRE TABS ===== -->
+    <div class="tab-bar" id="tab-bar">
+        <button class="active" onclick="switchTab('sec-params',this)"><span class="tab-icon">⚙️</span>Param.</button>
+        <button onclick="switchTab('sec-meteo',this)"><span class="tab-icon">☀️</span>Météo</button>
+        <button onclick="switchTab('sec-depart',this)"><span class="tab-icon">🚒</span>Départ</button>
+        <button onclick="switchTab('sec-transit',this)"><span class="tab-icon">📡</span>Transit</button>
+        <button onclick="switchTab('sec-actions',this)"><span class="tab-icon">⚙️</span>Actions</button>
+        <button onclick="switchTab('sec-demandes',this)"><span class="tab-icon">➕</span>Demandes</button>
+        <button onclick="switchTab('sec-renseignements',this)"><span class="tab-icon">📋</span>Renseign.</button>
+        <button onclick="switchTab('sec-aero',this)"><span class="tab-icon">🚁</span>Aéro</button>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════════════════════════
+     JAVASCRIPT — Vanilla uniquement
+     SÉCURITÉ : Ne JAMAIS intégrer de clé API (OpenAI, etc.) en dur côté navigateur.
+     Toute clé exposée dans le code source client est récupérable par n'importe quel utilisateur,
+     ce qui constitue un risque de sécurité majeur (usurpation, surconsommation, fuite de données).
+     L'appel IA passe par un endpoint backend contrôlé (POST /api/generate-codis-message).
+═══════════════════════════════════════════════════════════════════════════════════════════════ -->
+    <script>
+        (function () {
+            'use strict';
+
+            /* ===== CONSTANTES ===== */
+            const LS_KEY = 'fdf-codis-data';
+            const API_ENDPOINT = '/api/generate-codis-message';
+
+            /* ===== INITIALISATION ===== */
+            document.addEventListener('DOMContentLoaded', () => {
+                setDefaults();
+                loadFromStorage();
+                attachAutoSave();
+                checkShareAPI();
+                updatePropagation();
+            });
+
+            /* ---- Valeurs par défaut ---- */
+            function setDefaults() {
+                const now = new Date();
+                const dateEl = document.getElementById('f-date');
+                const heureEl = document.getElementById('f-heure');
+                if (dateEl && !dateEl.value) dateEl.value = now.toISOString().slice(0, 10);
+                if (heureEl && !heureEl.value) heureEl.value = now.toTimeString().slice(0, 5);
+            }
+
+            /* ===== TAB NAVIGATION ===== */
+            window.switchTab = function (sectionId, btn) {
+                // Hide all sections
+                document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+                // Deactivate all tab buttons
+                document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+                // Show target section
+                document.getElementById(sectionId).classList.add('active');
+                // Activate clicked button
+                if (btn) btn.classList.add('active');
+                // Scroll to top
+                window.scrollTo(0, 0);
+            };
+
+            /* ===== DROPDOWN MENU (header) ===== */
+            window.toggleDropdown = function () {
+                document.getElementById('codis-dropdown').classList.toggle('show');
+            };
+            window.closeDropdown = function () {
+                document.getElementById('codis-dropdown').classList.remove('show');
+            };
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown')) closeDropdown();
+            });
+
+            /* ===== COLLECTE DES DONNÉES ===== */
+            function collectData() {
+                const data = {};
+                // Champs simples (input, select, textarea avec data-key)
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.dataset.key;
+                    if (el.type === 'checkbox') {
+                        data[key] = el.checked;
+                    } else if (el.type === 'radio') {
+                        if (el.checked) data[key] = el.value;
+                    } else {
+                        data[key] = el.value;
+                    }
+                });
+                // Moyens terrestres
+                data.moyens = [];
+                document.querySelectorAll('#moyens-list .dyn-item').forEach(item => {
+                    const inputs = item.querySelectorAll('input');
+                    if (inputs[0].value || inputs[1].value) {
+                        data.moyens.push({ libelle: inputs[0].value, quantite: inputs[1].value });
+                    }
+                });
+                // Moyens aéro
+                data.aeroMoyens = [];
+                document.querySelectorAll('#aero-moyens-list .dyn-item').forEach(item => {
+                    const inputs = item.querySelectorAll('input');
+                    const lib = inputs[0].value;
+                    const rot = inputs[1].value;
+                    const auto = inputs[2].value;
+                    if (lib || rot || auto) {
+                        data.aeroMoyens.push({ libelle: lib, rotation: rot, autonomie: auto });
+                    }
+                });
+                return data;
+            }
+
+            function restoreData(data) {
+                if (!data) return;
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.dataset.key;
+                    if (!(key in data)) return;
+                    if (el.type === 'checkbox') {
+                        el.checked = !!data[key];
+                    } else if (el.type === 'radio') {
+                        el.checked = (el.value === data[key]);
+                    } else {
+                        el.value = data[key] || '';
+                    }
+                });
+                // Moyens terrestres
+                const list = document.getElementById('moyens-list');
+                list.innerHTML = '';
+                if (data.moyens && data.moyens.length) {
+                    data.moyens.forEach(m => addMoyen(m.libelle, m.quantite));
+                }
+                // Moyens aéro
+                const aeroList = document.getElementById('aero-moyens-list');
+                if (aeroList) {
+                    aeroList.innerHTML = '';
+                    if (data.aeroMoyens && data.aeroMoyens.length) {
+                        data.aeroMoyens.forEach(m => addAeroMoyen(m.libelle, m.rotation, m.autonomie));
+                    }
+                }
+                // Affichage NE LARGUEZ PAS
+                handleLargage();
+                updatePropagation();
+                toggleModeEngagement();
+            }
+
+            /* ===== LOCALSTORAGE ===== */
+            function saveToStorage() {
+                try { localStorage.setItem(LS_KEY, JSON.stringify(collectData())); } catch (e) { }
+            }
+            function loadFromStorage() {
+                try {
+                    const raw = localStorage.getItem(LS_KEY);
+                    if (raw) restoreData(JSON.parse(raw));
+                } catch (e) { }
+            }
+            function attachAutoSave() {
+                document.querySelectorAll('input,select,textarea').forEach(el => {
+                    el.addEventListener('input', () => { saveToStorage(); updatePropagation(); syncDFCI(); updateFormations(); });
+                    el.addEventListener('change', () => { saveToStorage(); handleLargage(); updatePropagation(); syncDFCI(); updateFormations(); });
+                });
+            }
+
+            /* ===== MOYENS DYNAMIQUES ===== */
+            window.addMoyen = function (lib, qty) {
+                const list = document.getElementById('moyens-list');
+                const div = document.createElement('div');
+                div.className = 'dyn-item';
+                div.innerHTML = `<input type="text" placeholder="Libellé moyen" value="${lib || ''}">` +
+                    `<input type="text" class="qty" placeholder="Qté" value="${qty || ''}">` +
+                    `<button type="button" onclick="this.parentElement.remove();saveToStorage();" aria-label="Supprimer">✕</button>`;
+                list.appendChild(div);
+                // Auto-save pour les nouveaux inputs
+                div.querySelectorAll('input').forEach(i => {
+                    i.addEventListener('input', () => { saveToStorage(); });
+                });
+            };
+
+            window.addAeroMoyen = function (lib, rot, auto) {
+                const list = document.getElementById('aero-moyens-list');
+                if (!list) return;
+                const div = document.createElement('div');
+                div.className = 'dyn-item';
+                div.style.display = 'flex';
+                div.style.gap = '0.5rem';
+                div.style.alignItems = 'center';
+
+                div.innerHTML = `<input type="text" placeholder="Type / indicatif" value="${lib || ''}" style="flex:2; min-width:80px;">` +
+                    `<input type="text" placeholder="min" value="${rot || ''}" style="flex:1; min-width:60px; text-align:center;">` +
+                    `<input type="number" placeholder="min" value="${auto || ''}" style="flex:1; min-width:60px; text-align:center;" oninput="calculateAeroLimitTime(this)">` +
+                    `<span class="limit-time" style="font-size:0.85rem; font-weight:bold; color:var(--primary); flex:1; text-align:center; white-space:nowrap;"></span>` +
+                    `<button type="button" onclick="this.parentElement.remove();saveToStorage();" aria-label="Supprimer" style="margin-left:auto;">✕</button>`;
+                list.appendChild(div);
+
+                const timeInput = div.querySelector('input[type="number"]');
+                if (auto) calculateAeroLimitTime(timeInput);
+
+                // Auto-save pour les nouveaux inputs
+                div.querySelectorAll('input').forEach(i => {
+                    i.addEventListener('input', () => { saveToStorage(); });
+                });
+            };
+
+            window.calculateAeroLimitTime = function (inputEl) {
+                const limitSpan = inputEl.nextElementSibling;
+                const minutes = parseInt(inputEl.value);
+                if (!isNaN(minutes) && minutes > 0) {
+                    const now = new Date();
+                    now.setMinutes(now.getMinutes() + minutes);
+                    const hh = String(now.getHours()).padStart(2, '0');
+                    const mm = String(now.getMinutes()).padStart(2, '0');
+                    limitSpan.textContent = `H.L : ${hh}:${mm}`;
+                } else {
+                    limitSpan.textContent = '';
+                }
+            };
+
+            /* ===== LARGAGE ===== */
+            function handleLargage() {
+                const warn = document.getElementById('no-drop-warn');
+                const non = document.querySelector('input[name="largage"][value="Non"]');
+                warn.style.display = (non && non.checked) ? 'block' : 'none';
+            }
+
+            /* ===== CALCUL PROPAGATION ===== */
+            function updatePropagation() {
+                // Estimation basée sur vent et risque — simplifié
+                const forceVent = parseFloat(document.getElementById('f-force')?.value || '') || 0;
+                const risque = document.getElementById('f-risque')?.value || '';
+                const coeff = { Faible: 0.5, 'Modéré': 1, 'Élevé': 2, 'Très élevé': 3.5, 'Extrême': 5 }[risque] || 0;
+                const mh = Math.round(forceVent * coeff * 10);
+                document.getElementById('propag-h').textContent = mh ? mh : '—';
+                document.getElementById('propag-m').textContent = mh ? (mh / 60).toFixed(1) : '—';
+            }
+
+            /* ===== MODE ENGAGEMENT : CCF isolé / GIFF ===== */
+            window.toggleModeEngagement = function () {
+                const mode = document.querySelector('input[name="modeEngagement"]:checked')?.value;
+                document.getElementById('block-ccf').style.display = (mode === 'ccf') ? 'block' : 'none';
+                document.getElementById('block-giff').style.display = (mode === 'giff') ? 'block' : 'none';
+                document.getElementById('formations-block').style.display = (mode === 'giff') ? 'block' : 'none';
+                saveToStorage();
+                updateSynthese();
+                updateFormations();
+            };
+
+            /* ===== FORMATIONS : transit & tactique ===== */
+            /* ===== GÉNÉRER MESSAGE FLASH ===== */
+            window.buildFlashMessage = function () {
+                const jeSuis = document.getElementById('f-trJeSuis')?.value || '';
+                const apercois = document.getElementById('f-trApercois')?.value || '';
+                const demande = document.getElementById('f-trDemande')?.value || '';
+                const parts = [];
+                if (jeSuis) parts.push(jeSuis);
+                if (apercois) parts.push(`J'aperçois : ${apercois}`);
+                if (demande) parts.push(`Je demande :\n${demande}`);
+                const flash = parts.join('\n\n');
+                const dest = document.getElementById('f-trFlash');
+                if (dest) dest.value = flash;
+                saveToStorage(); updateSynthese();
+                document.getElementById('flash-overlay').classList.add('open');
+            };
+            window.closeFlashOverlay = function () {
+                document.getElementById('flash-overlay').classList.remove('open');
+            };
+            window.copyFlash = function () {
+                const txt = document.getElementById('f-trFlash')?.value || '';
+                navigator.clipboard.writeText(txt).then(() => showToast('Message flash copié !'));
+            };
+
+            /* ===== GÉNÉRER MESSAGE RENSEIGNEMENTS ===== */
+            window.buildRenseignementsMessage = function () {
+                const jeSuis = document.getElementById('f-trJeSuis')?.value || '';
+
+                // Je vois
+                const panache = document.getElementById('f-panache')?.value || '';
+                const surfM = document.getElementById('f-surfMenacee')?.value || '';
+                const surfB = document.getElementById('f-surfBrulee')?.value || '';
+                const actC = document.getElementById('f-actionsCours')?.value || '';
+                const topo = document.getElementById('f-topo')?.value || '';
+
+                // Je vois - Checkboxes
+                const getChecked = (keys, labels) => keys.map((k, i) => document.querySelector(`[data-key="${k}"]`)?.checked ? labels[i] : null).filter(Boolean).join(', ');
+                const zone = getChecked(['zoneForet', 'zoneBroussailles'], ['Forêt', 'Broussailles']);
+                const strate = getChecked(['strateHerb', 'strateArbust', 'strateArbor'], ['Herbacées', 'Arbustives', 'Arborescente']);
+                const comp = getChecked(['compFeuillus', 'compResineux'], ['Feuillus', 'Résineux']);
+                const massif = getChecked(['massifDense', 'massifPeuDense', 'massifContinu', 'massifDiscontinu'], ['Dense', 'Peu dense', 'Continu', 'Discontinu']);
+                const propag = getChecked(['propPenteAsc', 'propPenteDesc', 'propTalweg', 'propCrete'], ['Pente ascendante', 'Pente descendante', 'Talweg', 'Crête']);
+                const propagAxe = document.querySelector('[data-key="propAxe"]')?.value || '';
+
+                // Enjeux
+                const p = document.getElementById('f-enjeuP')?.value || '';
+                const b = document.getElementById('f-enjeuB')?.value || '';
+                const e = document.getElementById('f-enjeuE')?.value || '';
+
+                // Je fais
+                const tact = document.getElementById('f-tactique')?.value || '';
+                const sec = document.getElementById('f-securite')?.value || '';
+                const acc = document.getElementById('f-accesRepli')?.value || '';
+                const rsq = document.getElementById('f-risques')?.value || '';
+
+                const parts = [];
+                if (jeSuis) {
+                    const jeSuisInter = jeSuis.replace('en transit sur le feu situé', 'en intervention sur le feu situé');
+                    parts.push(`📍 JE SUIS :\n${jeSuisInter}`);
+                }
+
+                const jeVois = [];
+                if (panache) jeVois.push(`- Panache : ${panache}`);
+                if (zone) jeVois.push(`- Zone : ${zone}`);
+                if (strate) jeVois.push(`- Strate : ${strate}`);
+                if (comp) jeVois.push(`- Composé de : ${comp}`);
+                if (massif) jeVois.push(`- Massif : ${massif}`);
+                if (propag || propagAxe) {
+                    const propStr = [propag, propagAxe].filter(Boolean).join(' | ');
+                    jeVois.push(`- Propagation : ${propStr}`);
+                }
+                if (surfB) jeVois.push(`- Surface brûlée : ${surfB} ha`);
+                if (surfM) jeVois.push(`- Surface menacée : ${surfM} ha`);
+                if (topo) jeVois.push(`- Topographie : ${topo}`);
+                if (jeVois.length) parts.push(`👁️ JE VOIS :\n${jeVois.join('\n')}`);
+
+                const enjeux = [];
+                if (p) enjeux.push(`- Population : ${p}`);
+                if (b) enjeux.push(`- Biens : ${b}`);
+                if (e) enjeux.push(`- Environnement : ${e}`);
+                if (enjeux.length) parts.push(`🎯 ENJEUX :\n${enjeux.join('\n')}`);
+
+                const jeFais = [];
+                if (actC) jeFais.push(`- Actions en cours : ${actC}`);
+                if (tact) jeFais.push(`- Tactique : ${tact}`);
+                if (sec) jeFais.push(`- Sécurité : ${sec}`);
+                if (rsq) jeFais.push(`- Risques : ${rsq}`);
+                if (jeFais.length) parts.push(`⚙️ JE FAIS :\n${jeFais.join('\n')}`);
+
+                const msg = parts.join('\n\n');
+                const dest = document.getElementById('f-rensMessage');
+                if (dest) dest.value = msg;
+                saveToStorage();
+                document.getElementById('rens-overlay').classList.add('open');
+            };
+            window.closeRensOverlay = function () {
+                document.getElementById('rens-overlay').classList.remove('open');
+            };
+            window.copyRensMessage = function () {
+                const txt = document.getElementById('f-rensMessage')?.value || '';
+                navigator.clipboard.writeText(txt).then(() => showToast('Message copié !'));
+            };
+
+            function updateFormations() {
+                const mode = document.querySelector('input[name="modeEngagement"]:checked')?.value;
+                if (mode !== 'giff') return;
+                const vehicles = [
+                    { key: 'vltt', label: '🚙 VLTT' },
+                    { key: 'gccf1', label: '🚒 CCF 1' },
+                    { key: 'gccf2', label: '🚒 CCF 2' },
+                    { key: 'gccf3', label: '🚒 CCF 3' },
+                    { key: 'gccf4', label: '🚒 CCF 4' },
+                ];
+                function buildList(type) {
+                    const suffix = type === 'transit' ? 'PosTransit' : 'PosTactique';
+                    const items = vehicles.map(v => {
+                        const posEl = document.querySelector(`[data-key="${v.key}${suffix}"]`);
+                        const numEl = document.querySelector(`[data-key="${v.key}Num"]`);
+                        const ciEl = document.querySelector(`[data-key="${v.key}CI"]`);
+                        const pos = posEl ? parseInt(posEl.value) || 99 : 99;
+                        const num = numEl ? numEl.value : '';
+                        const ci = ciEl ? ciEl.value : '';
+                        const display = num ? `${v.label} — ${num}${ci ? ' (' + ci + ')' : ''}` : v.label;
+                        return { pos, display };
+                    });
+                    items.sort((a, b) => a.pos - b.pos);
+                    return items;
+                }
+                function render(containerId, items, cssClass) {
+                    const el = document.getElementById(containerId);
+                    el.className = 'formation-display' + (cssClass ? ' ' + cssClass : '');
+                    el.innerHTML = items.map((it, i) =>
+                        `<div class="formation-item"><span class="pos-num">${i + 1}</span>${it.display}</div>`
+                    ).join('');
+                }
+                render('formation-transit', buildList('transit'), '');
+                render('formation-tactique', buildList('tactique'), 'tactique');
+            }
+
+            /* ===== SYNC Section B → Section D (DFCI + Adresse → Je suis) + Param CODIS → Section D ===== */
+            function syncDFCI() {
+                // Sync Coordonnée DFCI → En DFCI
+                const srcDFCI = document.getElementById('f-pointDFCI');
+                const destDFCI = document.getElementById('f-dfci');
+                if (srcDFCI && destDFCI && !destDFCI.dataset.manual) {
+                    destDFCI.value = srcDFCI.value;
+                }
+                // Sync Adresse → Je suis
+                const srcAddr = document.getElementById('f-pointAdresse');
+                const destJeSuis = document.getElementById('f-jesuis');
+                if (srcAddr && destJeSuis && !destJeSuis.dataset.manual) {
+                    destJeSuis.value = srcAddr.value;
+                }
+                // Sync CODIS Param → CODIS section D
+                const srcCodis = document.getElementById('f-codis-param');
+                const destCodis = document.getElementById('f-codis');
+                if (srcCodis && destCodis && !destCodis.dataset.manual) {
+                    destCodis.value = srcCodis.value;
+                }
+                // Sync selected vehicle → Transit "Je suis" pre-fill
+                const trJeSuis = document.getElementById('f-trJeSuis');
+                if (trJeSuis && !trJeSuis.dataset.manual) {
+                    const selected = document.querySelector('input[name="jeSuisSur"]:checked')?.value;
+                    if (selected) {
+                        const vehicleMap = {
+                            ccf: { numKey: 'ccfNum', ciKey: 'ccfCI', label: 'CCF' },
+                            vltt: { numKey: 'vlttNum', ciKey: 'vlttCI', label: 'VLTT' },
+                            gccf1: { numKey: 'gccf1Num', ciKey: 'gccf1CI', label: 'CCF 1' },
+                            gccf2: { numKey: 'gccf2Num', ciKey: 'gccf2CI', label: 'CCF 2' },
+                            gccf3: { numKey: 'gccf3Num', ciKey: 'gccf3CI', label: 'CCF 3' },
+                            gccf4: { numKey: 'gccf4Num', ciKey: 'gccf4CI', label: 'CCF 4' },
+                        };
+                        const v = vehicleMap[selected];
+                        if (v) {
+                            const num = document.querySelector(`[data-key="${v.numKey}"]`)?.value || '';
+                            const ci = document.querySelector(`[data-key="${v.ciKey}"]`)?.value || '';
+                            const codis = srcCodis?.value || 'CODIS ___';
+                            const addr = document.getElementById('f-pointAdresse')?.value || '___';
+                            const commune = document.getElementById('f-pointCommune')?.value || '___';
+                            const engin = num || v.label;
+                            const ciStr = ci ? ` (${ci})` : '';
+                            trJeSuis.value = `${codis} de ${engin}${ciStr} en transit sur le feu situé ${addr} commune de ${commune}`;
+                        }
+                    }
+                }
+                // Sync Commune B → Commune D
+                const srcCommune = document.getElementById('f-pointCommune');
+                const destCommune = document.getElementById('f-commune');
+                if (srcCommune && destCommune && !destCommune.dataset.manual) {
+                    destCommune.value = srcCommune.value;
+                }
+                // Sync Commune B → COS section D ("COS [commune]")
+                const destCos = document.getElementById('f-cos');
+                if (srcCommune && destCos && !destCos.dataset.manual) {
+                    destCos.value = srcCommune.value ? 'COS ' + srcCommune.value : '';
+                }
+                // Sync Fréquence 3/4 → Consignes Canal radio
+                const freq = document.getElementById('f-freq')?.value || '';
+                const ct = document.getElementById('consigne-transit-freq');
+                const ck = document.getElementById('consigne-tactique-freq');
+                if (ct) ct.textContent = freq || '—';
+                if (ck) ck.textContent = freq || '—';
+
+                // === Sync Transit (C) → Section D & Actions ===
+                // Panache
+                const trPanache = document.getElementById('f-trApercois');
+                const destPanache = document.getElementById('f-panache');
+                if (trPanache && destPanache && !destPanache.dataset.manual) destPanache.value = trPanache.value;
+
+                // Tactique de chantier
+                const trTact = document.getElementById('f-trTactique');
+                const destTact = document.getElementById('f-tactique');
+                if (trTact && destTact && !destTact.dataset.manual) destTact.value = trTact.value;
+                // AIR / SOL
+                const trAir = document.getElementById('f-trAirSol');
+                const destAir = document.getElementById('f-airsol');
+                if (trAir && destAir && !destAir.dataset.manual) destAir.value = trAir.value;
+            }
+            // Permettre à l'utilisateur de saisir manuellement dans les champs D (override)
+            document.addEventListener('DOMContentLoaded', () => {
+                ['f-dfci', 'f-jesuis', 'f-codis', 'f-commune', 'f-cos', 'f-panache', 'f-topo', 'f-veget', 'f-accesRepli', 'f-risques', 'f-tactique', 'f-airsol', 'f-trJeSuis'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.addEventListener('focus', () => { el.dataset.manual = 'true'; });
+                        el.addEventListener('blur', () => { if (!el.value) delete el.dataset.manual; });
+                    }
+                });
+            });
+
+            // Expose pour les événements inline
+            window.saveToStorage = saveToStorage;
+
+            /* ===== EXPORT / IMPORT JSON ===== */
+            window.exportJSON = function () {
+                const data = collectData();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `fdf-codis-${data.date || 'export'}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('📥 JSON exporté');
+            };
+
+            window.importJSON = function (evt) {
+                const file = evt.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        restoreData(data);
+                        saveToStorage();
+                        updateSynthese();
+                        showToast('📤 Données importées');
+                    } catch (err) { showToast('❌ Fichier JSON invalide'); }
+                };
+                reader.readAsText(file);
+                evt.target.value = '';
+            };
+
+            /* ===== RÉINITIALISER ===== */
+            window.resetForm = function () {
+                if (!confirm('Réinitialiser tous les champs ? Les données seront perdues.')) return;
+                localStorage.removeItem(LS_KEY);
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+                    else el.value = '';
+                });
+                document.getElementById('moyens-list').innerHTML = '';
+                document.getElementById('no-drop-warn').style.display = 'none';
+                setDefaults();
+                updateSynthese();
+                updatePropagation();
+                showToast('🗑️ Formulaire réinitialisé');
+            };
+
+            /* ===== TOAST ===== */
+            function showToast(msg) {
+                const t = document.getElementById('toast');
+                t.textContent = msg;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 2500);
+            }
+
+        })();
+    </script>
+</body>
+
+</html>
