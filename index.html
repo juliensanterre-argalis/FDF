@@ -1201,7 +1201,7 @@
                 setDefaults();
                 loadFromStorage();
                 attachAutoSave();
-                checkShareAPI();
+                // checkShareAPI(); // Removed since function is undefined
                 updatePropagation();
             });
 
@@ -1405,7 +1405,6 @@
                 document.getElementById('block-giff').style.display = (mode === 'giff') ? 'block' : 'none';
                 document.getElementById('formations-block').style.display = (mode === 'giff') ? 'block' : 'none';
                 saveToStorage();
-                updateSynthese();
                 updateFormations();
             };
 
@@ -1444,7 +1443,7 @@
                 const flash = parts.join('\n\n');
                 const dest = document.getElementById('f-trFlash');
                 if (dest) dest.value = flash;
-                saveToStorage(); updateSynthese();
+                saveToStorage();
                 document.getElementById('flash-overlay').classList.add('open');
             };
             window.closeFlashOverlay = function () {
@@ -1685,7 +1684,6 @@
                         const data = JSON.parse(e.target.result);
                         restoreData(data);
                         saveToStorage();
-                        updateSynthese();
                         showToast('📤 Données importées');
                     } catch (err) { showToast('❌ Fichier JSON invalide'); }
                 };
@@ -1704,7 +1702,6 @@
                 document.getElementById('moyens-list').innerHTML = '';
                 document.getElementById('no-drop-warn').style.display = 'none';
                 setDefaults();
-                updateSynthese();
                 updatePropagation();
                 showToast('🗑️ Formulaire réinitialisé');
             };
