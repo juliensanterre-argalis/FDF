@@ -1016,6 +1016,18 @@
                     data-key="renfort"></div>
             <div class="field"><label for="f-commentDemandes">Commentaire demandes</label><textarea
                     id="f-commentDemandes" data-key="commentDemandes"></textarea></div>
+            <div class="field">
+                <label>Services à prévenir (Services)</label>
+                <div class="chk-group" style="margin-top:0.4rem">
+                    <label><input type="checkbox" id="f-dmDemandeFDO" data-key="dmDemandeFDO"> Forces de l'ordre</label>
+                    <label><input type="checkbox" id="f-dmDemandeONF" data-key="dmDemandeONF"> ONF</label>
+                    <label><input type="checkbox" id="f-dmDemandeElu" data-key="dmDemandeElu"> Élu</label>
+                    <label><input type="checkbox" id="f-dmDemandeDDT" data-key="dmDemandeDDT"> DDT</label>
+                    <label><input type="checkbox" id="f-dmDemandeEau" data-key="dmDemandeEau"> Service des eaux</label>
+                    <label><input type="checkbox" id="f-dmDemandeEnedis" data-key="dmDemandeEnedis"> Enedis</label>
+                    <label><input type="checkbox" id="f-dmDemandeGRDF" data-key="dmDemandeGRDF"> GRDF</label>
+                </div>
+            </div>
         </div>
 
         <!-- ===== SECTION: Aero (Replacing Synthèse) ===== -->
@@ -1521,23 +1533,8 @@
                 if (rsq) jeFais.push(`- Risques : ${rsq}`);
                 if (jeFais.length) parts.push(`⚙️ JE FAIS :\n${jeFais.join('\n')}`);
 
-                // ✅ JE CONFIRME (Flash / Transit)
-                const confirmationText = document.getElementById('f-rensDemande')?.value || '';
-                const servicesDemandes = [];
-                if (document.getElementById('f-trDemandeFDO')?.checked) servicesDemandes.push('Forces de l\'ordre');
-                if (document.getElementById('f-trDemandeONF')?.checked) servicesDemandes.push('ONF');
-                if (document.getElementById('f-trDemandeElu')?.checked) servicesDemandes.push('Élu');
-                if (document.getElementById('f-trDemandeDDT')?.checked) servicesDemandes.push('DDT');
-                if (document.getElementById('f-trDemandeEau')?.checked) servicesDemandes.push('Service des eaux');
-                if (document.getElementById('f-trDemandeEnedis')?.checked) servicesDemandes.push('Enedis');
-                if (document.getElementById('f-trDemandeGRDF')?.checked) servicesDemandes.push('GRDF');
-
-                const jeConfirme = [];
-                if (confirmationText) jeConfirme.push(`- Rappel : ${confirmationText}`);
-                if (servicesDemandes.length) jeConfirme.push(`- Services : ${servicesDemandes.join(', ')}`);
-                if (jeConfirme.length) parts.push(`✅ JE CONFIRME :\n${jeConfirme.join('\n')}`);
-
-                // 📥 JE DEMANDE (Nouveaux besoins)
+                // 📥 JE DEMANDE (Nouveaux besoins & Confirmation)
+                const confirmsMoyens = document.getElementById('f-rensDemande')?.value || '';
                 const renfort = document.getElementById('f-renfort')?.value || '';
                 const commentD = document.getElementById('f-commentDemandes')?.value || '';
 
@@ -1551,12 +1548,28 @@
                     }
                 });
 
-                const jeDemande = [];
-                if (moyensDemandes.length) jeDemande.push(`- Moyens : ${moyensDemandes.join(', ')}`);
-                if (renfort) jeDemande.push(`- Renfort : ${renfort}`);
-                if (commentD) jeDemande.push(`- Commentaire : ${commentD}`);
+                // Services (synced)
+                const servicesDemandes = [];
+                const serviceKeys = ['FDO', 'ONF', 'Elu', 'DDT', 'Eau', 'Enedis', 'GRDF'];
+                const serviceLabels = ['Forces de l\'ordre', 'ONF', 'Élu', 'DDT', 'Service des eaux', 'Enedis', 'GRDF'];
+                serviceKeys.forEach((key, i) => {
+                    if (document.getElementById(`f-trDemande${key}`)?.checked || document.getElementById(`f-dmDemande${key}`)?.checked) {
+                        servicesDemandes.push(serviceLabels[i]);
+                    }
+                });
 
-                if (jeDemande.length) parts.push(`📥 JE DEMANDE :\n${jeDemande.join('\n')}`);
+                const jeDemandeContent = [];
+                if (confirmsMoyens) jeDemandeContent.push(`- confirme les moyens en transit : ${confirmsMoyens}`);
+
+                let supplemt = [];
+                if (moyensDemandes.length) supplemt.push(moyensDemandes.join(', '));
+                if (renfort) supplemt.push(renfort);
+                if (commentD) supplemt.push(commentD);
+                if (supplemt.length) jeDemandeContent.push(`- je demande en supplément : ${supplemt.join(' | ')}`);
+
+                if (servicesDemandes.length) jeDemandeContent.push(`- Services : ${servicesDemandes.join(', ')}`);
+
+                if (jeDemandeContent.length) parts.push(`📥 JE DEMANDE :\n${jeDemandeContent.join('\n')}`);
 
                 const msg = parts.join('\n\n');
                 const dest = document.getElementById('f-rensMessage');
@@ -1701,6 +1714,16 @@
                     if (el) {
                         el.addEventListener('focus', () => { el.dataset.manual = 'true'; });
                         el.addEventListener('blur', () => { if (!el.value) delete el.dataset.manual; });
+                    }
+                });
+
+                // Bi-directional Sync for Service Checkboxes (Transit <-> Demandes)
+                ['FDO', 'ONF', 'Elu', 'DDT', 'Eau', 'Enedis', 'GRDF'].forEach(key => {
+                    const tr = document.getElementById(`f-trDemande${key}`);
+                    const dm = document.getElementById(`f-dmDemande${key}`);
+                    if (tr && dm) {
+                        tr.addEventListener('change', () => { dm.checked = tr.checked; saveToStorage(); });
+                        dm.addEventListener('change', () => { tr.checked = dm.checked; saveToStorage(); });
                     }
                 });
             });
