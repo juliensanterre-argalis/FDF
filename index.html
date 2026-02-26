@@ -951,6 +951,15 @@
             <div class="field"><label for="f-trDemande">Je demande</label>
                 <textarea id="f-trDemande" data-key="trDemande"
                     placeholder="- renfort terrestre et aérien&#10;- demande l'attribution d'une fréquence"></textarea>
+                <div class="chk-group" style="margin-top:0.4rem">
+                    <label><input type="checkbox" id="f-trDemandeFDO" data-key="trDemandeFDO"> Forces de l'ordre</label>
+                    <label><input type="checkbox" id="f-trDemandeONF" data-key="trDemandeONF"> ONF</label>
+                    <label><input type="checkbox" id="f-trDemandeElu" data-key="trDemandeElu"> Élu</label>
+                    <label><input type="checkbox" id="f-trDemandeDDT" data-key="trDemandeDDT"> DDT</label>
+                    <label><input type="checkbox" id="f-trDemandeEau" data-key="trDemandeEau"> Service des eaux</label>
+                    <label><input type="checkbox" id="f-trDemandeEnedis" data-key="trDemandeEnedis"> Enedis</label>
+                    <label><input type="checkbox" id="f-trDemandeGRDF" data-key="trDemandeGRDF"> GRDF</label>
+                </div>
             </div>
             <div class="field-row">
                 <div class="field"><label for="f-trTactique">Tactique de chantier</label>
@@ -1405,13 +1414,33 @@
             window.buildFlashMessage = function () {
                 const jeSuis = document.getElementById('f-trJeSuis')?.value || '';
                 const apercois = document.getElementById('f-trApercois')?.value || '';
-                const demande = document.getElementById('f-trDemande')?.value || '';
+                const demandeText = document.getElementById('f-trDemande')?.value || '';
                 const confirmeSecours = document.getElementById('f-trConfirmeSecours')?.checked;
+
+                // Services supplémentaires demandés
+                const servicesDemandes = [];
+                if (document.getElementById('f-trDemandeFDO')?.checked) servicesDemandes.push('Forces de l\'ordre');
+                if (document.getElementById('f-trDemandeONF')?.checked) servicesDemandes.push('ONF');
+                if (document.getElementById('f-trDemandeElu')?.checked) servicesDemandes.push('Élu');
+                if (document.getElementById('f-trDemandeDDT')?.checked) servicesDemandes.push('DDT');
+                if (document.getElementById('f-trDemandeEau')?.checked) servicesDemandes.push('Service des eaux');
+                if (document.getElementById('f-trDemandeEnedis')?.checked) servicesDemandes.push('Enedis');
+                if (document.getElementById('f-trDemandeGRDF')?.checked) servicesDemandes.push('GRDF');
+
                 const parts = [];
                 if (jeSuis) parts.push(jeSuis);
                 if (apercois) parts.push(`J'aperçois : ${apercois}`);
                 if (confirmeSecours) parts.push(`Je confirme les secours engagés`);
-                if (demande) parts.push(`Je demande :\n${demande}`);
+
+                // Construction du bloc "Je demande"
+                let demandeFinale = '';
+                if (demandeText) demandeFinale += demandeText;
+                if (servicesDemandes.length > 0) {
+                    const servicesList = servicesDemandes.map(s => `- ${s}`).join('\n');
+                    demandeFinale += (demandeFinale ? '\n' : '') + servicesList;
+                }
+                if (demandeFinale) parts.push(`Je demande :\n${demandeFinale}`);
+
                 const flash = parts.join('\n\n');
                 const dest = document.getElementById('f-trFlash');
                 if (dest) dest.value = flash;
