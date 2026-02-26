@@ -584,18 +584,7 @@
     <header class="app-header">
         <h1>🔥 Fiche Réflexe FDF</h1>
         <div class="header-actions">
-            <button onclick="exportJSON()" title="Exporter">📥</button>
-            <button onclick="document.getElementById('importFile').click()" title="Importer">📤</button>
             <button onclick="resetForm()" title="Réinitialiser">🗑️</button>
-            <div class="dropdown">
-                <button class="dropdown-toggle" onclick="toggleDropdown()">⚡ CODIS</button>
-                <div class="dropdown-menu" id="codis-dropdown">
-                    <button onclick="generateCODIS();closeDropdown()">🤖 Générer message CODIS</button>
-                    <button onclick="copyMessage();closeDropdown()">📋 Copier le message</button>
-                    <button onclick="shareMessage();closeDropdown()" id="btn-share">📤 Partager</button>
-                </div>
-            </div>
-            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
         </div>
     </header>
 
