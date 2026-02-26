@@ -1519,6 +1519,39 @@
                 if (rsq) jeFais.push(`- Risques : ${rsq}`);
                 if (jeFais.length) parts.push(`⚙️ JE FAIS :\n${jeFais.join('\n')}`);
 
+                // Je demande
+                const demandeTextT = document.getElementById('f-trDemande')?.value || '';
+                const servicesDemandes = [];
+                if (document.getElementById('f-trDemandeFDO')?.checked) servicesDemandes.push('Forces de l\'ordre');
+                if (document.getElementById('f-trDemandeONF')?.checked) servicesDemandes.push('ONF');
+                if (document.getElementById('f-trDemandeElu')?.checked) servicesDemandes.push('Élu');
+                if (document.getElementById('f-trDemandeDDT')?.checked) servicesDemandes.push('DDT');
+                if (document.getElementById('f-trDemandeEau')?.checked) servicesDemandes.push('Service des eaux');
+                if (document.getElementById('f-trDemandeEnedis')?.checked) servicesDemandes.push('Enedis');
+                if (document.getElementById('f-trDemandeGRDF')?.checked) servicesDemandes.push('GRDF');
+
+                const renfort = document.getElementById('f-renfort')?.value || '';
+                const commentD = document.getElementById('f-commentDemandes')?.value || '';
+
+                const moyensDemandes = [];
+                document.querySelectorAll('#moyens-list .dyn-item').forEach(item => {
+                    const inputs = item.querySelectorAll('input');
+                    if (inputs.length >= 2) {
+                        const lib = inputs[0].value.trim();
+                        const qty = inputs[1].value.trim();
+                        if (lib) moyensDemandes.push(`${qty || '1'} ${lib}`);
+                    }
+                });
+
+                const jeDemande = [];
+                if (demandeTextT) jeDemande.push(`- Transit : ${demandeTextT}`);
+                if (servicesDemandes.length) jeDemande.push(`- Services : ${servicesDemandes.join(', ')}`);
+                if (moyensDemandes.length) jeDemande.push(`- Moyens : ${moyensDemandes.join(', ')}`);
+                if (renfort) jeDemande.push(`- Renfort : ${renfort}`);
+                if (commentD) jeDemande.push(`- Commentaire : ${commentD}`);
+
+                if (jeDemande.length) parts.push(`📥 JE DEMANDE :\n${jeDemande.join('\n')}`);
+
                 const msg = parts.join('\n\n');
                 const dest = document.getElementById('f-rensMessage');
                 if (dest) dest.value = msg;
