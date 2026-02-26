@@ -942,6 +942,12 @@
                 <textarea id="f-trApercois" data-key="trApercois"
                     placeholder="Description du panache observé…"></textarea>
             </div>
+            <div class="field">
+                <div class="chk-group" style="margin-top:0">
+                    <label><input type="checkbox" id="f-trConfirmeSecours" data-key="trConfirmeSecours"> Je confirme les
+                        secours engagés</label>
+                </div>
+            </div>
             <div class="field"><label for="f-trDemande">Je demande</label>
                 <textarea id="f-trDemande" data-key="trDemande"
                     placeholder="- renfort terrestre et aérien&#10;- demande l'attribution d'une fréquence"></textarea>
@@ -1400,9 +1406,11 @@
                 const jeSuis = document.getElementById('f-trJeSuis')?.value || '';
                 const apercois = document.getElementById('f-trApercois')?.value || '';
                 const demande = document.getElementById('f-trDemande')?.value || '';
+                const confirmeSecours = document.getElementById('f-trConfirmeSecours')?.checked;
                 const parts = [];
                 if (jeSuis) parts.push(jeSuis);
                 if (apercois) parts.push(`J'aperçois : ${apercois}`);
+                if (confirmeSecours) parts.push(`Je confirme les secours engagés`);
                 if (demande) parts.push(`Je demande :\n${demande}`);
                 const flash = parts.join('\n\n');
                 const dest = document.getElementById('f-trFlash');
