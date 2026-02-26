@@ -612,8 +612,8 @@
             <div id="block-ccf" style="display:none">
                 <h3 style="margin:0.8rem 0 0.4rem;color:var(--secondary)">🚒 CCF isolé</h3>
                 <div class="field-row">
-                    <div class="field"><label for="f-ccf-num">N° CCF</label><input type="text" id="f-ccf-num"
-                            data-key="ccfNum" placeholder="ex: CCF 1234"></div>
+                    <div class="field"><label for="f-ccf-num">N° CCF</label><input type="number" id="f-ccf-num"
+                            data-key="ccfNum" placeholder="N°" inputmode="numeric" pattern="[0-9]*"></div>
                     <div class="field"><label for="f-ccf-ci">CI d'appartenance</label><input type="text" id="f-ccf-ci"
                             data-key="ccfCI" placeholder="ex: CI Melun"></div>
                 </div>
@@ -631,8 +631,8 @@
                     <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚙
                         VLTT</label>
                     <div class="field-row">
-                        <div class="field"><label for="f-vltt-num">N°</label><input type="text" id="f-vltt-num"
-                                data-key="vlttNum" placeholder="N° VLTT"></div>
+                        <div class="field"><label for="f-vltt-num">N°</label><input type="number" id="f-vltt-num"
+                                data-key="vlttNum" placeholder="N° VLTT" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-vltt-ci">CI</label><input type="text" id="f-vltt-ci"
                                 data-key="vlttCI" placeholder="CI d'appartenance"></div>
                     </div>
@@ -652,8 +652,8 @@
                     <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚒 CCF
                         1</label>
                     <div class="field-row">
-                        <div class="field"><label for="f-gccf1-num">N°</label><input type="text" id="f-gccf1-num"
-                                data-key="gccf1Num" placeholder="N° CCF 1"></div>
+                        <div class="field"><label for="f-gccf1-num">N°</label><input type="number" id="f-gccf1-num"
+                                data-key="gccf1Num" placeholder="N° CCF 1" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-gccf1-ci">CI</label><input type="text" id="f-gccf1-ci"
                                 data-key="gccf1CI" placeholder="CI"></div>
                     </div>
@@ -672,8 +672,8 @@
                     <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚒 CCF
                         2</label>
                     <div class="field-row">
-                        <div class="field"><label for="f-gccf2-num">N°</label><input type="text" id="f-gccf2-num"
-                                data-key="gccf2Num" placeholder="N° CCF 2"></div>
+                        <div class="field"><label for="f-gccf2-num">N°</label><input type="number" id="f-gccf2-num"
+                                data-key="gccf2Num" placeholder="N° CCF 2" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-gccf2-ci">CI</label><input type="text" id="f-gccf2-ci"
                                 data-key="gccf2CI" placeholder="CI"></div>
                     </div>
@@ -692,8 +692,8 @@
                     <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚒 CCF
                         3</label>
                     <div class="field-row">
-                        <div class="field"><label for="f-gccf3-num">N°</label><input type="text" id="f-gccf3-num"
-                                data-key="gccf3Num" placeholder="N° CCF 3"></div>
+                        <div class="field"><label for="f-gccf3-num">N°</label><input type="number" id="f-gccf3-num"
+                                data-key="gccf3Num" placeholder="N° CCF 3" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-gccf3-ci">CI</label><input type="text" id="f-gccf3-ci"
                                 data-key="gccf3CI" placeholder="CI"></div>
                     </div>
@@ -712,8 +712,8 @@
                     <label style="font-weight:700;font-size:0.95rem;margin-bottom:0.3rem;display:block">🚒 CCF
                         4</label>
                     <div class="field-row">
-                        <div class="field"><label for="f-gccf4-num">N°</label><input type="text" id="f-gccf4-num"
-                                data-key="gccf4Num" placeholder="N° CCF 4"></div>
+                        <div class="field"><label for="f-gccf4-num">N°</label><input type="number" id="f-gccf4-num"
+                                data-key="gccf4Num" placeholder="N° CCF 4" inputmode="numeric" pattern="[0-9]*"></div>
                         <div class="field"><label for="f-gccf4-ci">CI</label><input type="text" id="f-gccf4-ci"
                                 data-key="gccf4CI" placeholder="CI"></div>
                     </div>
@@ -1051,10 +1051,10 @@
                 <input type="text" data-key="propAxe" placeholder="Axe de propagation" style="margin-top:0.4rem">
             </div>
             <div class="field-row">
-                <div class="field"><label for="f-surfBrulee">Surface brûlée</label><input type="text" id="f-surfBrulee"
-                        data-key="surfaceBrulee" placeholder="ha"></div>
-                <div class="field"><label for="f-surfMenacee">Surface menacée</label><input type="text"
-                        id="f-surfMenacee" data-key="surfaceMenacee" placeholder="ha"></div>
+                <div class="field"><label for="f-surfBrulee">Surface brûlée</label><input type="number"
+                        id="f-surfBrulee" data-key="surfaceBrulee" placeholder="ha" inputmode="decimal"></div>
+                <div class="field"><label for="f-surfMenacee">Surface menacée</label><input type="number"
+                        id="f-surfMenacee" data-key="surfaceMenacee" placeholder="ha" inputmode="decimal"></div>
             </div>
             <div class="field">
                 <label style="font-size:1.05rem;font-weight:700;color:var(--primary)">Enjeux / Points
@@ -1244,7 +1244,7 @@
                 const div = document.createElement('div');
                 div.className = 'dyn-item';
                 div.innerHTML = `<input type="text" placeholder="Libellé moyen" value="${lib || ''}">` +
-                    `<input type="text" class="qty" placeholder="Qté" value="${qty || ''}">` +
+                    `<input type="text" class="qty" placeholder="Qté" value="${qty || ''}" inputmode="numeric" pattern="[0-9]*">` +
                     `<button type="button" onclick="this.parentElement.remove();saveToStorage();" aria-label="Supprimer">✕</button>`;
                 list.appendChild(div);
                 // Auto-save pour les nouveaux inputs
@@ -1263,7 +1263,7 @@
                 div.style.alignItems = 'center';
 
                 div.innerHTML = `<input type="text" placeholder="Type / indicatif" value="${lib || ''}" style="flex:2; min-width:80px;">` +
-                    `<input type="text" placeholder="min" value="${rot || ''}" style="flex:1; min-width:60px; text-align:center;">` +
+                    `<input type="number" placeholder="min" value="${rot || ''}" style="flex:1; min-width:60px; text-align:center;" inputmode="numeric" pattern="[0-9]*">` +
                     `<input type="number" placeholder="min" value="${auto || ''}" style="flex:1; min-width:60px; text-align:center;" oninput="calculateAeroLimitTime(this)">` +
                     `<span class="limit-time" style="font-size:0.85rem; font-weight:bold; color:var(--primary); flex:1; text-align:center; white-space:nowrap;"></span>` +
                     `<button type="button" onclick="this.parentElement.remove();saveToStorage();" aria-label="Supprimer" style="margin-left:auto;">✕</button>`;
